@@ -1,5 +1,7 @@
 ## Welcome to GitHub Pages
 
+[![Join the chat at https://gitter.im/BluetoothWrapperAndroid/Lobby](https://badges.gitter.im/BluetoothWrapperAndroid/Lobby.svg)](https://gitter.im/BluetoothWrapperAndroid/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 You can use the [editor on GitHub](https://github.com/GeorgiosGoniotakis/BluetoothWrapper/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
