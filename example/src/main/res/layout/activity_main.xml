@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.github.georgiosgoniotakis.bluetoothwrapper.example.MainActivity"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
+
+    <Button
+        android:id="@+id/disconnectButton"
+        android:layout_width="113dp"
+        android:layout_height="101dp"
+        android:text="Disconnect"
+        tools:layout_editor_absoluteY="164dp"
+        tools:layout_editor_absoluteX="214dp"
+        android:layout_marginTop="61dp"
+        android:layout_below="@+id/currentMessage"
+        android:layout_toEndOf="@+id/connectButton"
+        android:layout_marginStart="33dp" />
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignStart="@+id/currentMessage"
+        android:layout_below="@+id/disconnectButton"
+        android:layout_marginStart="43dp"
+        android:layout_marginTop="28dp"
+        android:text="Send"
+        tools:layout_editor_absoluteX="142dp"
+        tools:layout_editor_absoluteY="292dp" />
+
+    <Button
+        android:id="@+id/connectButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="Connect"
+        tools:layout_editor_absoluteY="164dp"
+        tools:layout_editor_absoluteX="57dp"
+        android:layout_marginStart="47dp"
+        android:layout_alignTop="@+id/disconnectButton"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/currentMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/connectButton"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="51dp"
+        android:text="Incoming message..."
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="99dp"
+        tools:layout_editor_absoluteY="54dp" />
+
+</RelativeLayout>
