@@ -177,7 +177,7 @@ public class BTExplorer {
      * This method produces a {@link Set} with all the available Bluetooth
      * devices as {@link BluetoothDevice} objects.
      *
-     * @return Returns a {@link Set<BluetoothDevice>} with all the available
+     * @return Returns a {@link Set} with all the available
      * paired Bluetooth devices.
      */
     public Set<BluetoothDevice> pairedDevices() {
