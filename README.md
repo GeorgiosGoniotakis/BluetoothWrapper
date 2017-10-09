@@ -20,7 +20,7 @@ BluetoothWrapper, as its name calls, is a wrapper library around Android's Bluet
 
 ### Advantages of using this Bluetooth library:
 
-* No learning curve. The developer can use simple commands like connect, write and disconnect to control the connection. Thus, you are free to focus on other things that matter most.
+* No learning curve. The developer can use simple commands like connect, send and disconnect to control the connection. Thus, you are free to focus on other things that matter most.
 * Lightweight. It is a simple wrapper library which includes only the necessary methods for controlling the connection to a Bluetooth device.
 * No need to search for hours on the Internet on how to implement a way of receiving incoming Bluetooth messages in your custom class. We have done this for you. More details in the included example.
 * Easy subscription to notifications about the Bluetooth adapter's and connection's states
