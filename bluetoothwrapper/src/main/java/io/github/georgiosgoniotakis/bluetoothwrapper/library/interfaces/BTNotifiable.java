@@ -1,6 +1,7 @@
 package io.github.georgiosgoniotakis.bluetoothwrapper.library.interfaces;
 
-import io.github.georgiosgoniotakis.bluetoothwrapper.library.receivers.*;
+import io.github.georgiosgoniotakis.bluetoothwrapper.library.receivers.BTAdapterReceiver;
+import io.github.georgiosgoniotakis.bluetoothwrapper.library.receivers.BTDeviceReceiver;
 
 /**
  * This interface notifies the class which implements it about

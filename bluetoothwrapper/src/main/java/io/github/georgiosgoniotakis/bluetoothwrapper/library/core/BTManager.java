@@ -31,7 +31,7 @@ public class BTManager {
     /**
      * Unique tag for this class
      */
-    private final String TAG = "BTManager.java";
+    private final String TAG = getClass().getSimpleName();
 
     /**
      * Standard UUID code
@@ -160,7 +160,7 @@ public class BTManager {
         } catch (IOException connectionException) {
 
             Log.e(TAG, "Unable to connect to socket.");
-            closeSocket();
+            terminateTransmission();
         }
 
     }
@@ -275,6 +275,7 @@ public class BTManager {
         try {
             btSocket.close();
         } catch (IOException ex) {
+            BTExplorer.getInstance(null).disconnect();
             Log.e(TAG, "Unable to close socket");
         }
     }
@@ -310,8 +311,8 @@ public class BTManager {
      */
     void terminateTransmission() {
         threadIsRunning = false;
-        closeSocket();
         clearStreams();
+        closeSocket();
     }
 
     /**

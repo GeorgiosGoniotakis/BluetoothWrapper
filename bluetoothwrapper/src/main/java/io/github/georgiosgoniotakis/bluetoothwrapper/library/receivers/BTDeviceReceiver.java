@@ -22,7 +22,7 @@ public class BTDeviceReceiver extends BroadcastReceiver {
     /**
      * Unique tag for this class.
      */
-    private final String TAG = "BTDeviceReceiver.java";
+    private final String TAG = getClass().getSimpleName();
 
     /**
      * Temporary instance of {@link BTNotifiable}
@@ -50,7 +50,7 @@ public class BTDeviceReceiver extends BroadcastReceiver {
      * method.
      *
      * @param context Current context
-     * @param intent Current intent
+     * @param intent  Current intent
      */
     @Override
     public void onReceive(Context context, Intent intent) {
