@@ -16,7 +16,7 @@ import io.github.georgiosgoniotakis.bluetoothwrapper.library.exceptions.NotValid
 import io.github.georgiosgoniotakis.bluetoothwrapper.library.properties.Mode;
 
 /**
- * This it the main file of the BluetoothWrapper library. This class monitors
+ * This it the main file of the BluetoothWrapper library. This class
  * initializes a basic connection with the device's BT adapter and after that
  * it monitors any paired devices. It contains many utility methods which allow
  * the developer to obtain information about any paired devices.
@@ -26,7 +26,7 @@ import io.github.georgiosgoniotakis.bluetoothwrapper.library.properties.Mode;
  *
  * @author Georgios Goniotakis
  * @version 1.1
- * @since 13 October 2017
+ * @since 12 October 2017
  */
 public class BTExplorer {
 
@@ -71,8 +71,8 @@ public class BTExplorer {
     /**
      * Standard getInstance method of Singleton pattern. It is synchronized
      * to be Thread-Safe and uses a @RequiresPermission annotation to remind
-     * to the user about the required permissions. Can be initialized with
-     * {@link Handler} objects to enable passing incoming messages to a given class.
+     * to the user about the required permissions. Can be initialized with a
+     * {@link Handler} object to enable passing incoming messages to a given class.
      * <p>
      *
      * @param btHandler A {@link Handler} for incoming and outgoing messages
@@ -90,8 +90,7 @@ public class BTExplorer {
 
 
     /**
-     * Initializes a BT connection after it checks that all the
-     * criteria are met.
+     * Initializes a BT connection
      */
     private void initializeConnection() {
 

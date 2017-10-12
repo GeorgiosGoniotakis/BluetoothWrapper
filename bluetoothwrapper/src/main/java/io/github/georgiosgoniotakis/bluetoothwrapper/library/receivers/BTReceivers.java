@@ -9,17 +9,31 @@ import android.util.Log;
 import io.github.georgiosgoniotakis.bluetoothwrapper.library.interfaces.BTNotifiable;
 
 /**
- * File Name: FILE_NAME
+ * This class can be used to initialize the two BroadcastReceivers
+ * {@link BTAdapterReceiver} and {@link BTDeviceReceiver} at once.
+ * <p>
+ * Please use it only if you are use that the {@link Context} object
+ * stays the same and current during the instance of this class. An
+ * alternative is to copy the code of this class and adapt it to any
+ * {@link android.app.Activity} class that you want.
  *
  * @author Georgios Goniotakis
- *         Date: 11-Oct-17 11:55 PM
- *         Description:
  */
 public class BTReceivers {
 
+    /**
+     * Unique identifier for this class
+     */
     private final String TAG = getClass().getSimpleName();
 
+    /**
+     * The current context
+     */
     private final Context context;
+
+    /**
+     * The current {@link BTNotifiable} instance
+     */
     private BTNotifiable btNotifiable;
 
     /**
@@ -32,6 +46,12 @@ public class BTReceivers {
      */
     private BTDeviceReceiver btDeviceReceiver;
 
+    /**
+     * Constructor of the class. Initializes both receivers.
+     *
+     * @param context The current context
+     * @param logging True if output in Logcat is preferred
+     */
     public BTReceivers(Context context, boolean logging) {
 
         this.context = context;
@@ -47,10 +67,21 @@ public class BTReceivers {
         this.btDeviceReceiver = new BTDeviceReceiver(this.btNotifiable, logging);
     }
 
+    /**
+     * Validates that the {@link Context} object that is passed
+     * to the constructor is also a valid {@link BTNotifiable}
+     * instance.
+     *
+     * @return Result of this check (true if it is)
+     */
     private boolean validateParameters() {
         return this.context != null && this.context instanceof BTNotifiable;
     }
 
+    /**
+     * Can be called outside this class to register
+     * the two receivers.
+     */
     public void registerReceivers() {
         registerBTAdapterReceiver();
         registerBTDeviceReceiver();

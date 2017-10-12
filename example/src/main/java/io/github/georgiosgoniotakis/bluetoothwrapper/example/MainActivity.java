@@ -26,7 +26,7 @@ import io.github.georgiosgoniotakis.bluetoothwrapper.library.receivers.BTReceive
  * This is a demo activity for the BluetoothWrapper Android library.
  * Here, you can find a comprehensive example with all of the library's utilities.
  * <p>
- * Also, do not forget to implement {@link BTNotifiable} to receive updates by
+ * Do not forget to implement {@link BTNotifiable} to receive updates by
  * the connection's {@link android.content.BroadcastReceiver}
  *
  * @author Georgios Goniotakis
@@ -48,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements BTNotifiable, Vie
     /* UI components */
     private TextView currentMessage;
 
+    /**
+     * Create an instance of this class wherever you want
+     * notifications about the state of the Bluetooth
+     * adapter and connection.
+     */
     private BTReceivers btReceivers;
 
 
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements BTNotifiable, Vie
         connectButton.setOnClickListener(this);
         disconnectButton.setOnClickListener(this);
 
+        /* Initialize receivers */
         btReceivers = new BTReceivers(this, true);
         btReceivers.registerReceivers();
 
@@ -83,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements BTNotifiable, Vie
             Here you can store all the paired devices if you want to use them
             in any other place inside your code.
          */
-
         Set<BluetoothDevice> pairedDevices = btExplorer.pairedDevices();
 
     }

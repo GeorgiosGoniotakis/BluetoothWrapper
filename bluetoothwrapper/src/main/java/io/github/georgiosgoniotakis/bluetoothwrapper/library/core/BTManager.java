@@ -22,7 +22,7 @@ import io.github.georgiosgoniotakis.bluetoothwrapper.library.properties.Mode;
  * This is the heart of the Bluetooth library. In here, all the methods
  * that control the state and the transmission of data are included. The
  * reason why it is a rather large class is to avoid bypass classes that
- * would pass common information between constructors and methods.
+ * would transfer common information between constructors and methods.
  *
  * @author Georgios Goniotakis
  */
@@ -245,9 +245,9 @@ public class BTManager {
      *
      * @param inputMessage A given message as a string
      */
-    public void sendMessage(String inputMessage) {
+    void sendMessage(String inputMessage) {
 
-        if(inputMessage == null){
+        if (inputMessage == null) {
             return;
         }
 
