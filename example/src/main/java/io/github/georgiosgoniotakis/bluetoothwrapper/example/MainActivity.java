@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,31 +18,21 @@ import java.util.Set;
 import io.github.georgiosgoniotakis.bluetoothwrapper.library.core.BTExplorer;
 import io.github.georgiosgoniotakis.bluetoothwrapper.library.exceptions.BTDeviceNotFoundException;
 import io.github.georgiosgoniotakis.bluetoothwrapper.library.interfaces.BTNotifiable;
-import io.github.georgiosgoniotakis.bluetoothwrapper.library.interfaces.BTReachable;
 import io.github.georgiosgoniotakis.bluetoothwrapper.library.interfaces.MessageCodes;
 import io.github.georgiosgoniotakis.bluetoothwrapper.library.properties.Mode;
-import io.github.georgiosgoniotakis.bluetoothwrapper.library.receivers.BTAdapterReceiver;
-import io.github.georgiosgoniotakis.bluetoothwrapper.library.receivers.BTDeviceReceiver;
+import io.github.georgiosgoniotakis.bluetoothwrapper.library.receivers.BTReceivers;
 
 /**
  * This is a demo activity for the BluetoothWrapper Android library.
  * Here, you can find a comprehensive example with all of the library's utilities.
- * Always implement {@link BTReachable} to get notified about the state of
- * the device's {@link BluetoothAdapter}.
  * <p>
- * Also, do not forget to implement {@link BTNotifiable} to receive updates by
+ * Do not forget to implement {@link BTNotifiable} to receive updates by
  * the connection's {@link android.content.BroadcastReceiver}
  *
  * @author Georgios Goniotakis
  */
-public class MainActivity extends AppCompatActivity implements BTReachable, BTNotifiable,
-        View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements BTNotifiable, View.OnClickListener {
 
-
-    /**
-     * A keyword for this class.
-     */
-    private final String TAG = "MainActivity.java";
 
     /**
      * The connection's flag. Can be any number greater than zero.
@@ -61,14 +49,11 @@ public class MainActivity extends AppCompatActivity implements BTReachable, BTNo
     private TextView currentMessage;
 
     /**
-     * A receiver to get updates for the BT adapter's state
+     * Create an instance of this class wherever you want
+     * notifications about the state of the Bluetooth
+     * adapter and connection.
      */
-    BTAdapterReceiver btAdapterReceiver;
-
-    /**
-     * A receiver to get updates for the BT connection's state
-     */
-    BTDeviceReceiver btDeviceReceiver;
+    private BTReceivers btReceivers;
 
 
     @Override
@@ -83,26 +68,26 @@ public class MainActivity extends AppCompatActivity implements BTReachable, BTNo
 
         currentMessage = (TextView) findViewById(R.id.currentMessage);
 
-        btAdapterReceiver = new BTAdapterReceiver(this, true);
-        btDeviceReceiver = new BTDeviceReceiver(this, true);
-
         sendButton.setOnClickListener(this);
         connectButton.setOnClickListener(this);
         disconnectButton.setOnClickListener(this);
 
-        /* Registration of receivers which track the adapter's and device's states */
-        registerBTAdapterReceiver();
-        registerBTDeviceReceiver();
+        /* Initialize receivers */
+        btReceivers = new BTReceivers(this, true);
+        btReceivers.registerReceivers();
 
-        btExplorer = BTExplorer.getInstance(this, btHandler); // Get Singleton Instance
+        btExplorer = BTExplorer.getInstance(btHandler); // Get Singleton Instance
 
-        /* This line outputs a list with the available devices in the information logcat and stores
-           it into a String array
-        */
+        /*
+            This line outputs a list with the available devices in the information logcat and stores
+            it into a String array
+         */
         String[][] info = btExplorer.deviceList(true);
 
-        /* Here you can store all the paired devices if you want to use them
-           in any other place inside your code.
+
+        /*
+            Here you can store all the paired devices if you want to use them
+            in any other place inside your code.
          */
         Set<BluetoothDevice> pairedDevices = btExplorer.pairedDevices();
 
@@ -123,54 +108,6 @@ public class MainActivity extends AppCompatActivity implements BTReachable, BTNo
             }
         }
     };
-
-    /**
-     * Call this method to subscribe the class to the
-     * {@link BTDeviceReceiver}
-     */
-    private void registerBTDeviceReceiver() {
-
-        IntentFilter btDevFilter = new IntentFilter();
-        btDevFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        btDevFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        btDevFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-        registerReceiver(btDeviceReceiver, btDevFilter);
-
-    }
-
-    /**
-     * Call this method to subscribe the class to the
-     * {@link BTAdapterReceiver}
-     */
-    private void registerBTAdapterReceiver() {
-
-        IntentFilter btAdFilter = new IntentFilter();
-        btAdFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(btAdapterReceiver, btAdFilter);
-
-    }
-
-    /**
-     * Unregisters the two receivers. Currently there is no method
-     * implemented in the official API to check if a class is registered
-     * to a {@link android.content.BroadcastReceiver}. A workaround of that is
-     * to use {@link IllegalArgumentException}. Use it separately for each receiver.
-     */
-    private void unregisterReceivers() {
-
-        try {
-            unregisterReceiver(btAdapterReceiver);
-
-        } catch (IllegalArgumentException ex) {
-            Log.e(TAG, "No active registration in BTAdapterReceiver");
-        }
-
-        try {
-            unregisterReceiver(btDeviceReceiver);
-        } catch (IllegalArgumentException ex) {
-            Log.e(TAG, "No active registration in BTDeviceReceiver");
-        }
-    }
 
     /**
      * The interaction with the Bluetooth connection popup is going to
@@ -208,7 +145,14 @@ public class MainActivity extends AppCompatActivity implements BTReachable, BTNo
                 /* Perform a new secure connection to a device giving the MAC address */
                 try {
 
-                    btExplorer.connect("00:00:00:00:00:00", Mode.SECURE);
+                    if (!btExplorer.isSupported()) {
+                        Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
+                    } else if (!btExplorer.isEnabled()) {
+                        Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBT, REQUEST_ENABLE_BT);
+                    } else {
+                        btExplorer.connect("00:00:00:00:00:00", Mode.SECURE);
+                    }
 
                 } catch (BTDeviceNotFoundException e) {
 
@@ -235,27 +179,7 @@ public class MainActivity extends AppCompatActivity implements BTReachable, BTNo
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceivers();
-    }
-
-    /**
-     * This method is triggered when the Bluetooth is disabled in the
-     * user's device. As a result, a popup asking the user to enable
-     * the connection is shown.
-     */
-    @Override
-    public void onBluetoothDisabled() {
-        Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(enableBT, REQUEST_ENABLE_BT);
-    }
-
-    /**
-     * If the device does not support Bluetooth communication, notify the user and
-     * kindly disable all of the application's Bluetooth-related features.
-     */
-    @Override
-    public void onBluetoothNotSupported() {
-        Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
+        btReceivers.unregisterReceivers();
     }
 
     /**
@@ -268,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements BTReachable, BTNo
     public void onAdapterStateChange(int adapterState) {
         if (adapterState == BluetoothAdapter.STATE_TURNING_OFF) {
             Toast.makeText(this, "Please re-enable bluetooth.", Toast.LENGTH_LONG).show();
+            btExplorer.disconnect();
         } else if (adapterState == BluetoothAdapter.STATE_TURNING_ON) {
             Toast.makeText(this, "Thank you for enabling you bluetooth.", Toast.LENGTH_LONG).show();
         }
@@ -285,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements BTReachable, BTNo
             Toast.makeText(this, "BT Device connected", Toast.LENGTH_LONG).show();
         } else if (deviceState.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
             Toast.makeText(this, "BT Device disconnected", Toast.LENGTH_LONG).show();
+            btExplorer.disconnect();
         }
     }
 }
