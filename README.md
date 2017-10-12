@@ -36,18 +36,15 @@ The library is available in JCenter and can be easily used by adding the followi
 
 
 ```
-compile 'io.github.georgiosgoniotakis.bluetoothwrapper:bluetoothwrapper:1.0'
+compile 'io.github.georgiosgoniotakis.bluetoothwrapper:bluetoothwrapper:1.1'
 ```
 
 <br />
-A first step is to include the library into your project's dependencies. After this step is over, you need to initialize a new object which is responsible for discovering the Bluetooth devices. Add in your preferred class which is going to control the Bluetooth connection the following line:
+A first step is to include the library into your project's dependencies. After this step is over, you need to initialize a new object which is responsible for discovering the Bluetooth devices. Add in your preferred class, which is going to control the Bluetooth connection, the following line:
 
 ```java
-BTExplorer btExplorer = BTExplorer.getInstance(this, handler);
+BTExplorer btExplorer = BTExplorer.getInstance(handler);
 ``` 
-<br />
-
-**NB: Your class has to implement the BTReachable interface which will inform it of any problems regarding the Bluetooth adapter. The handler is the way to receive incoming messages.**
 
 <br />
 Get the list of Bluetooth device as a Set<BluetoothDevice> using the following command:
@@ -99,7 +96,22 @@ btExplorer.disconnect();
 
 <br />
 
-To receive notifications about the connection, subscribe to the custom BroadcastReceivers ([BTAdapterReceiver](https://github.com/GeorgiosGoniotakis/BluetoothWrapper/blob/master/bluetoothwrapper/src/main/java/io/github/georgiosgoniotakis/bluetoothwrapper/library/receivers/BTAdapterReceiver.java), [BTDeviceReceiver](https://github.com/GeorgiosGoniotakis/BluetoothWrapper/blob/master/bluetoothwrapper/src/main/java/io/github/georgiosgoniotakis/bluetoothwrapper/library/receivers/BTDeviceReceiver.java)).
+To receive notifications about the connection, subscribe to the custom BroadcastReceivers ([BTAdapterReceiver](https://github.com/GeorgiosGoniotakis/BluetoothWrapper/blob/master/bluetoothwrapper/src/main/java/io/github/georgiosgoniotakis/bluetoothwrapper/library/receivers/BTAdapterReceiver.java) and [BTDeviceReceiver](https://github.com/GeorgiosGoniotakis/BluetoothWrapper/blob/master/bluetoothwrapper/src/main/java/io/github/georgiosgoniotakis/bluetoothwrapper/library/receivers/BTDeviceReceiver.java)). 
+
+If you have a current Context object the whole process is simplified by calling:
+
+```java
+BTReceivers btReceivers = new BTReceivers(this, true);
+btReceivers.registerReceivers();
+```
+
+And for unregistering the active receivers
+
+```java
+btReceivers.unregisterReceivers();
+```
+
+<br/>
 
 An example of using all of the library's features in an Android application, and more detailed explanations can be found [here](https://github.com/GeorgiosGoniotakis/BluetoothWrapper/blob/master/example/src/main/java/io/github/georgiosgoniotakis/bluetoothwrapper/example/MainActivity.java) 
 
