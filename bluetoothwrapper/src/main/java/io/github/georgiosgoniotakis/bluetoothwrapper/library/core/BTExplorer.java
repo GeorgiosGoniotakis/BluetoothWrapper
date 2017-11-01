@@ -25,10 +25,10 @@ import io.github.georgiosgoniotakis.bluetoothwrapper.library.properties.Mode;
  * This class is implemented following the Thread-Safe Singleton pattern.
  *
  * @author Georgios Goniotakis
- * @version 1.1
+ * @version 1.2
  * @since 12 October 2017
  */
-public class BTExplorer {
+final public class BTExplorer {
 
     /**
      * Unique debug identifier for this class
@@ -98,7 +98,6 @@ public class BTExplorer {
         getBluetoothAdapter();
 
     }
-
 
     /**
      * Checks whether the Handler is null.
@@ -209,31 +208,33 @@ public class BTExplorer {
 
 
         Set<BluetoothDevice> pairedDevices = pairedDevices();
-        String[][] info = new String[pairedDevices().size()][2];
+
+        if (pairedDevices == null) {
+            Log.e(TAG, "No available paired devices.");
+            return null;
+        }
+
+        String[][] info = new String[pairedDevices.size()][2];
 
         StringBuilder table = new StringBuilder();
         table.append("----------------------------------------------------\n");
 
 
-        if (pairedDevices != null) {
+        int cnt = 0;
 
-            int cnt = 0;
+        table.append(String.format("%-30s | %-20s\n", "DEVICE NAME", "MAC ADDRESS"));
 
-            table.append(String.format("%-30s | %-20s\n", "DEVICE NAME", "MAC ADDRESS"));
+        for (BluetoothDevice bluetoothDevice : pairedDevices) {
 
-            for (BluetoothDevice bluetoothDevice : pairedDevices) {
+            info[cnt][0] = bluetoothDevice.getName();
+            info[cnt][1] = bluetoothDevice.getAddress();
 
-                info[cnt][0] = bluetoothDevice.getName();
-                info[cnt][1] = bluetoothDevice.getAddress();
+            table.append(String.format("%-30s | %-20s\n", bluetoothDevice.getName(),
+                    bluetoothDevice.getAddress()));
 
-                table.append(String.format("%-30s | %-20s\n", bluetoothDevice.getName(),
-                        bluetoothDevice.getAddress()));
-
-                cnt++;
-            }
-        } else {
-            table.append("No paired devices in list\n");
+            cnt++;
         }
+
 
         table.append("----------------------------------------------------\n");
 
@@ -244,7 +245,6 @@ public class BTExplorer {
         return info;
 
     }
-
 
     /**
      * Performs all necessary checks and establishes the communication with
@@ -276,7 +276,8 @@ public class BTExplorer {
 
         Map<String, BluetoothDevice> tmp = devicesToMap();
 
-        if (tmp != null && tmp.containsKey(deviceMAC)) {
+        if (deviceMAC != null && !deviceMAC.trim().isEmpty() &&
+                tmp != null && tmp.containsKey(deviceMAC)) {
             btManager = new BTManager(tmp.get(deviceMAC), bluetoothAdapter, btHandler, mode);
             btManager.beginTransmission();
         } else {
@@ -329,7 +330,7 @@ public class BTExplorer {
      * @param message The message as a String
      */
     public void send(String message) {
-        if (btManager != null) {
+        if (isConnectionActive()) {
             btManager.sendMessage(message);
         } else {
             Log.e(TAG, "No active connection with device. Message cannot be sent.");
@@ -341,8 +342,8 @@ public class BTExplorer {
      *
      * @return True if a connection with a BT device is active
      */
-    private boolean isConnectionActive() {
-        return btManager != null;
+    public boolean isConnectionActive() {
+        return btManager != null && btManager.isSocketConnected();
     }
 
     /**
