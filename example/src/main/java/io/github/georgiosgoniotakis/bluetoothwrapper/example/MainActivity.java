@@ -79,6 +79,25 @@ public class MainActivity extends AppCompatActivity implements BTNotifiable, Vie
         btExplorer = BTExplorer.getInstance(btHandler); // Get Singleton Instance
 
         /*
+            The user's device does not support Bluetooth functionality. Please
+            disable all Bluetooth-related features.
+         */
+        if(!btExplorer.isSupported()){
+            Toast.makeText(this, "Your device does not support Bluetooth functionality.",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        /*
+            Currently, the user has their Bluetooth disabled. Show them a popup message
+             to enable it. Do not continue calling the library's methods if the user
+             insists on having the connection disabled.
+         */
+        if(!btExplorer.isEnabled()){
+            Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBT, REQUEST_ENABLE_BT);
+        }
+
+        /*
             This line outputs a list with the available devices in the information logcat and stores
             it into a String array
          */

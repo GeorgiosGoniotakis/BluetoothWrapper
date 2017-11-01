@@ -26,7 +26,7 @@ import io.github.georgiosgoniotakis.bluetoothwrapper.library.properties.Mode;
  *
  * @author Georgios Goniotakis
  */
-public class BTManager {
+final public class BTManager {
 
     /**
      * Unique tag for this class
@@ -154,11 +154,8 @@ public class BTManager {
         btAdapter.cancelDiscovery();
 
         try {
-
             btSocket.connect();
-
         } catch (IOException connectionException) {
-
             Log.e(TAG, "Unable to connect to socket.");
             terminateTransmission();
         }
@@ -275,7 +272,6 @@ public class BTManager {
         try {
             btSocket.close();
         } catch (IOException ex) {
-            BTExplorer.getInstance(null).disconnect();
             Log.e(TAG, "Unable to close socket");
         }
     }
@@ -313,6 +309,7 @@ public class BTManager {
         threadIsRunning = false;
         clearStreams();
         closeSocket();
+        BTExplorer.getInstance(null).disconnect();
     }
 
     /**
